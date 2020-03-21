@@ -619,6 +619,8 @@ class PIE(object):
                 if i[0] not in [0, 1]:
                     raise Exception("The label values used for balancing must be"
                                     " either 0 or 1")
+        if ratio==0:
+            return seq_data
 
         # balances the number of positive and negative samples
         print('---------------------------------------------------------')

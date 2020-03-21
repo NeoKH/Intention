@@ -12,7 +12,7 @@ from keras.applications import vgg16
 from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 
-def get_path(self,
+def get_path(
              type_save='models',  # model or data
              models_save_folder='',
              model_name='convlstm_encdec',
@@ -73,6 +73,8 @@ def load_images_and_process(data,convnet,data_subset='train',**data_opts):
             img_name = imp.split('/')[-1].split('.')[0]
             img_save_folder = os.path.join(save_path, set_id, vid_id)
             img_save_path = os.path.join(img_save_folder, img_name + '_' + p[0] + '.pkl')
+            if os.path.exists(img_save_path):
+                continue
             img_data = load_img(imp)  # 加载PIL图像实例,一张
             bbox = jitter_bbox(imp, [b], 'enlarge', 2)[0]  # 扩大裁减范围
             bbox = squarify(bbox, 1, img_data.size[0])  # 调整宽高比

@@ -117,8 +117,6 @@ class PIEIntent(object):
 
         self._model_name = 'convlstm_encdec'
 
-    def count_ratio(self,):
-
     def get_path(self,
                  type_save='models', # model or data
                  models_save_folder='',

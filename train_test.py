@@ -22,7 +22,7 @@ import os
 import sys
 
 from pie_intent import PIEIntent
-# from pie_predict import PIEPredict
+# from pie_intent_without_bbox import PIEIntent
 
 from pie_data import PIE
 
@@ -69,7 +69,7 @@ def train_intent(train_test=1):
 
     imdb = PIE(data_path=os.environ.copy()['PIE_PATH'])
 
-    #pretrained_model_path = 'data/pie/intention/context_loc_pretrained'
+    pretrained_model_path = 'data/pie/intention/context_loc_pretrained'
    # pretrained_model_path='data/models/pie/intention/imgcontext/14Mar2020-05h58m05s'
 
    # input_types=['imgbbox','imgcontext','imgbbox+loc','imgcontext+loc']
@@ -95,10 +95,10 @@ def train_intent(train_test=1):
         
         if train_test < 2:  # Train
             beh_seq_val = imdb.generate_data_trajectory_sequence('val', **data_opts)
-            #beh_seq_val = imdb.balance_samples_count(beh_seq_val, label_type='intention_binary',ratio=1)
+            beh_seq_val = imdb.balance_samples_count(beh_seq_val, label_type='intention_binary',ratio=1)
 
             beh_seq_train = imdb.generate_data_trajectory_sequence('train', **data_opts)
-            #beh_seq_train = imdb.balance_samples_count(beh_seq_train, label_type='intention_binary',ratio=1)
+            beh_seq_train = imdb.balance_samples_count(beh_seq_train, label_type='intention_binary',ratio=1)
 
             saved_files_path = t.train(data_train=beh_seq_train,
                                     data_val=beh_seq_val,

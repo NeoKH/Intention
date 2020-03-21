@@ -8,6 +8,15 @@ from prettytable import PrettyTable
 
 dim_ordering = K.image_dim_ordering()
 
+
+def count_ratio(data):
+    pos = 0
+    output = data['output']
+    total = output.shape[0]
+    for output_seq in output:
+        pos += output_seq[0][0]
+    return pos, total - pos
+
 if __name__ == '__main__':
     ratio = float(sys.argv[1])
     data_opts = {
@@ -60,17 +69,19 @@ if __name__ == '__main__':
         beh_seq_val = imdb.balance_samples_count(beh_seq_val, label_type='intention_binary',ratio=ratio)
         beh_seq_train = imdb.generate_data_trajectory_sequence('train', **data_opts)
         beh_seq_train = imdb.balance_samples_count(beh_seq_train, label_type='intention_binary',ratio=ratio)
-        saved_files_path = t.train(data_train=beh_seq_train,
-                                   data_val=beh_seq_val,
-                                   epochs=400,
-                                   loss=['binary_crossentropy'],
-                                   metrics=['accuracy'],
-                                   batch_size=1,
-                                   optimizer_type='rmsprop',
-                                   data_opts=data_opts,
-                                   input_type=input_type)
 
-        print(data_opts['seq_overlap_rate'])
+        data_train=t.get_train_val_data(beh_seq_train, data_type=['intention_binary'], seq_length=15, overlap=0.5)
+        data_val=t.get_train_val_data(beh_seq_val, data_type=['intention_binary'], seq_length=15, overlap=0.5)
+
+        pos_train,neg_train=count_ratio(data_train)
+        pos_val, neg_val = count_ratio(data_val)
+
+        pt = PrettyTable(['data_type','positive samples', 'negative samples','ratio'])
+        pt.title = 'Proportion of positive and negative samples'
+        pt.add_row(['train',pos_train, neg_train, pos_train/neg_train])
+        pt.add_row(['val',pos_val, neg_val, pos_val/neg_val])
+        pt.add_row(['seq_length=15, overlap=0.5'])
+
         K.clear_session()
         tf.reset_default_graph()
 
